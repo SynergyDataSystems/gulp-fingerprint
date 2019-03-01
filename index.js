@@ -122,15 +122,16 @@ var plugin = function(manifest, options) {
 
     if (file.isBuffer()) {
       // console.log('is Buffer');
-      file.pipe(split())
-      .pipe(through(mode === 'regex' ? regexMode : replaceMode,  function(callback) {
+
+      let fn = mode === 'regex' ? regexMode : replaceMode;
+      fn(file.contents, enc, () => {
         if (content.length) {
           file.contents = new Buffer(content.join('\n'));
           that.push(file);
         }
         // callback();
         cb();
-      }));
+      });
     }
 
   });
